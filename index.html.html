@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dash – Groceries in 10 minutes</title>
+<style>
+:root{
+  --bg:#f7f7f5;--card:#fff;--ink:#171717;--mute:#737373;--line:#e8e8e5;
+  --brand:#0071e3;--brand-d:#0062c4;--tint:#eef6ff;--accent:#ffcc00;
+  --shadow:0 2px 12px rgba(0,0,0,.06),0 12px 32px rgba(0,0,0,.04);
+  --r:20px;--safe-bottom:env(safe-area-inset-bottom,0px);--safe-top:env(safe-area-inset-top,0px)
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif;min-width:320px;max-width:430px;margin:0 auto;line-height:1.4;overflow-x:hidden;padding-bottom:calc(82px + var(--safe-bottom))}
+button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}img{max-width:100%}.wrap{width:100%;padding:0 16px}
+/* Mobile header */
+header{position:sticky;top:0;z-index:30;background:rgba(247,247,245,.88);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,.06)}
+.nav{height:58px;display:flex;align-items:center;gap:10px;padding-top:var(--safe-top)}
+.logo{font-size:24px;font-weight:800;letter-spacing:-1.3px;display:flex;align-items:center;gap:5px;white-space:nowrap}.logo i{font-style:normal;font-size:20px}
+.loc{display:none}.nav .search{display:none}.btn{border:0;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .15s ease,background .15s ease,opacity .15s ease}.btn:active{transform:scale(.96)}
+.lg{margin-left:auto;background:var(--card);border:1px solid var(--line);height:38px;padding:0 13px;font-size:13px;font-weight:650}.cart-btn{background:var(--ink);color:#fff;height:38px;padding:0 13px;font-weight:700}.cart-btn span{font-size:12px}.cart-btn b{background:#fff;color:var(--ink);border-radius:99px;padding:1px 6px;font-size:11px}
+/* Search */
+.searchbar{margin:10px 16px 0;position:relative}.searchbar input{width:100%;height:46px;border:0;border-radius:15px;background:#ededeb;padding:0 16px 0 43px;color:var(--ink);outline:none;font-size:15px}.searchbar input:focus{box-shadow:0 0 0 3px rgba(0,113,227,.12)}.searchbar:before{content:'⌕';position:absolute;left:15px;top:8px;font-size:25px;color:#777;z-index:1}
+/* Main */
+main{padding-top:8px}.hero{margin:14px 16px 0;border-radius:24px;padding:25px 21px;min-height:208px;background:linear-gradient(145deg,#eaf4ff,#f7fbff);overflow:hidden;position:relative}.hero:after{content:'';position:absolute;width:170px;height:170px;border-radius:50%;right:-55px;bottom:-70px;background:rgba(0,113,227,.09)}.hero .art{display:none}.hero h1{position:relative;z-index:1;font-size:34px;line-height:1.02;letter-spacing:-1.6px;max-width:280px}.hero p{position:relative;z-index:1;margin:12px 0 17px;color:#626262;font-size:14px;max-width:250px}.cta{position:relative;z-index:1;background:var(--ink);color:#fff;padding:11px 17px;font-size:13px;font-weight:700}.cta2{background:#fff;color:var(--ink);padding:11px 17px;font-size:13px;font-weight:700;border:1px solid var(--line)}
+/* Perks */
+.perks{display:flex;gap:9px;overflow:auto;padding:16px;scrollbar-width:none}.perks::-webkit-scrollbar,.cats::-webkit-scrollbar,.promo::-webkit-scrollbar,.chips::-webkit-scrollbar{display:none}.perk{min-width:150px;background:var(--card);border:1px solid var(--line);border-radius:17px;padding:12px 13px;box-shadow:0 2px 8px rgba(0,0,0,.025)}.perk b{display:block;font-size:13px}.perk span{display:block;color:var(--mute);font-size:11px;margin-top:3px}
+/* Sections */
+.sec{padding:0 16px;margin-top:8px}.sec h2{font-size:20px;letter-spacing:-.5px;margin-bottom:11px}.cats{display:flex;gap:10px;overflow:auto;padding-bottom:4px;scrollbar-width:none}.cat{flex:0 0 76px;border:0;background:transparent;text-align:center}.cat .tile{height:66px;border-radius:18px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;font-size:29px;margin-bottom:6px}.cat b{font-size:11px;font-weight:650;color:#444}.promo{display:flex;gap:10px;overflow:auto;scrollbar-width:none}.pc{min-width:260px;min-height:128px;border-radius:20px;padding:17px;position:relative;overflow:hidden}.pc.p1{background:#f0f7ff}.pc.p2{background:#f5f2ff}.pc.p3{background:#fff6df}.pc b{display:block;font-size:18px;letter-spacing:-.4px;max-width:170px}.pc span{display:block;font-size:11px;color:#666;margin-top:5px;max-width:170px}.pc .pill{display:inline-flex;margin-top:13px;padding:5px 9px;background:rgba(255,255,255,.8);border-radius:99px;font-size:10px;font-weight:700}
+/* Filters */
+.chips{display:flex;gap:8px;overflow:auto;scrollbar-width:none;padding:2px 0 10px}.chip{border:1px solid var(--line);background:var(--card);border-radius:99px;padding:8px 12px;font-size:12px;white-space:nowrap}.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+/* Products */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 3px 12px rgba(0,0,0,.035)}.img{aspect-ratio:1/1;background:#f4f4f2;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}.img img{width:100%;height:100%;object-fit:cover}.off{position:absolute;left:8px;top:8px;background:var(--ink);color:#fff;border-radius:7px;padding:4px 6px;font-size:9px;font-weight:800}.pd{padding:11px}.name{font-size:13px;font-weight:650;line-height:1.25;min-height:32px}.db{font-size:10px;color:var(--mute);margin-top:4px}.row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:9px}.price{font-size:14px;font-weight:800}.price s{font-size:10px;color:#aaa;font-weight:500;margin-left:3px}.add{background:var(--brand);color:#fff;height:34px;min-width:58px;padding:0 12px;font-size:12px;font-weight:750}.qty{display:flex;align-items:center;gap:9px}.qty button{width:28px;height:28px;border-radius:50%;border:1px solid var(--line);background:#fff}.qty b{font-size:12px}
+/* Cart bar */
+.bar{position:fixed;left:50%;bottom:calc(70px + var(--safe-bottom));transform:translateX(-50%);width:min(398px,calc(100% - 24px));z-index:25;background:var(--ink);color:#fff;border-radius:17px;padding:11px 13px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 12px 35px rgba(0,0,0,.2)}.bar .go{background:#fff;color:var(--ink);padding:9px 12px;font-size:12px;font-weight:800}.bar .tw{font-size:12px}.bar .eta{font-size:10px;color:#aaa}
+/* Bottom nav */
+.tabs{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(430px,100%);height:66px;padding:5px 5px calc(5px + var(--safe-bottom));z-index:24;display:grid;grid-template-columns:repeat(5,1fr);background:rgba(255,255,255,.92);backdrop-filter:saturate(180%) blur(22px);-webkit-backdrop-filter:saturate(180%) blur(22px);border-top:1px solid rgba(0,0,0,.07)}.tabs button{border:0;background:transparent;color:#777;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px;font-weight:600}.tabs button span{font-size:20px;line-height:1}.tabs button.on,.tabs button:active{color:var(--brand)}
+/* Drawers / sheets / modals */
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:40;opacity:0;pointer-events:none;transition:opacity .2s}.ov.on{opacity:1;pointer-events:auto}.drawer,.sheet,.modal{position:fixed;z-index:41;left:50%;transform:translateX(-50%);width:min(430px,100%);background:var(--card);color:var(--ink)}.drawer{right:auto;bottom:0;border-radius:24px 24px 0 0;max-height:88dvh;overflow:auto;padding:18px 16px calc(22px + var(--safe-bottom))}.sheet{bottom:0;border-radius:24px 24px 0 0;max-height:92dvh;overflow:auto;padding:18px 16px calc(24px + var(--safe-bottom))}.modal{top:50%;transform:translate(-50%,-50%);width:calc(100% - 28px);max-height:88dvh;border-radius:22px;padding:20px;overflow:auto}.x,.x2{width:36px;height:36px;border-radius:50%;border:0;background:#f1f1ef;font-size:18px}.drawer .dh,.sheet .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.drawer h2,.sheet h2,.modal h2{font-size:22px;letter-spacing:-.7px}.main{width:100%;height:48px;background:var(--ink);color:#fff;border-radius:14px;font-weight:750;margin-top:14px}.row.t{padding:10px 0;border-bottom:1px solid var(--line)}
+/* Tracking */
+.trk{background:#f5f5f3;border-radius:18px;padding:15px}.prog{height:5px;background:#ddd;border-radius:99px;overflow:hidden;margin:10px 0}.prog i{display:block;height:100%;background:var(--brand);border-radius:99px}.stp{display:flex;gap:10px;padding:9px 0}.stp .ic{width:28px;height:28px;border-radius:50%;background:#eee;display:grid;place-items:center;font-size:12px}.stp.on .ic{background:var(--brand);color:#fff}.stp b{font-size:12px}.stp span{display:block;font-size:10px;color:var(--mute)}
+/* Login */
+.otp{display:flex;gap:8px}.otp input{width:100%;height:48px;text-align:center;border:1px solid var(--line);border-radius:12px;font-size:18px;outline:none}.otp input:focus{border-color:var(--brand);box-shadow:0 0 0 3px rgba(0,113,227,.1)}
+/* Splash / toast */
+.splash{position:fixed;inset:0;z-index:100;background:var(--bg);display:grid;place-items:center}.splash .scene{display:grid;place-items:center}.splash .cube{font-size:48px}.splash .n{font-size:38px;font-weight:850;letter-spacing:-2px}.toast{position:fixed;left:50%;bottom:calc(145px + var(--safe-bottom));transform:translateX(-50%) translateY(10px);z-index:90;background:var(--ink);color:#fff;border-radius:12px;padding:10px 14px;font-size:12px;opacity:0;pointer-events:none;transition:.2s;max-width:calc(100% - 32px);text-align:center}.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* Small phones */
+@media(max-width:359px){.wrap,.sec{padding-left:12px;padding-right:12px}.searchbar{margin-left:12px;margin-right:12px}.hero{margin-left:12px;margin-right:12px}.grid{gap:8px}.pd{padding:9px}.name{font-size:12px}.hero h1{font-size:31px}}
+@media(min-width:431px){body{box-shadow:0 0 40px rgba(0,0,0,.05)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<header><div class="wrap nav">
+  <div class="logo"><i>⚡</i>dash</div>
+  <div class="loc"><b>Delivery in 10 minutes</b><span>Home · Kurnool, Andhra Pradesh ▾</span></div>
+  <label class="search">🔍<input placeholder='Search "fresh milk"' id="q"></label>
+  <button class="btn lg" id="lb">Login</button>
+  <button class="btn cart-btn" id="cartBtn">🛒 <span id="hc">My Cart</span></button>
+</div></header>
+
+<main class="wrap">
+  <div id="sr"></div>
+  <section class="hero">
+    <div style="position:relative;z-index:1">
+      <div class="pill">⚡ Delivery in 10 minutes</div>
+      <h1>Everything you need. <em>Delivered</em> before you blink.</h1>
+      <p>Dairy, bakery, snacks and daily essentials, brought to your door from a store minutes away.</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><button class="btn cta" onclick="document.getElementById('chips').scrollIntoView({behavior:'smooth',block:'center'})">Shop now</button><button class="btn cta2" onclick="document.querySelector('.perks').scrollIntoView({behavior:'smooth',block:'center'})">Why Dash ›</button></div>
+    </div>
+    <div class="art">🛒</div>
+  </section>
+
+  <div class="perks">
+    <div class="perk"><div class="ic">⏱️</div><div><b>10 min delivery</b><span>Every order, every day</span></div></div>
+    <div class="perk"><div class="ic">🌿</div><div><b>Farm fresh quality</b><span>Handpicked and checked</span></div></div>
+    <div class="perk"><div class="ic">💸</div><div><b>Best prices</b><span>Free delivery above ₹199</span></div></div>
+  </div>
+
+  <h2>Shop by category <a>See all</a></h2>
+  <div class="cats" id="cats"></div>
+
+  <div class="promo">
+    <div class="pc p1"><div><small>FLAT 20% OFF</small><br><b>Dairy & breakfast essentials</b></div><i>🥛</i></div>
+    <div class="pc p2"><div><small>ORDER ₹299+</small><br><b>Free doorstep delivery</b></div><i>🛵</i></div>
+    <div class="pc p3"><div><small>NEW</small><br><b>Bakery fresh every morning</b></div><i>🥐</i></div>
+  </div>
+
+  <h2>Popular right now</h2>
+  <div class="chips" id="chips"></div>
+  <div class="grid" id="grid"></div>
+  <footer>© 2026 Dash · Designed for speed, built to feel premium.</footer>
+</main>
+
+<div class="bar" id="bar">
+  <div><small id="bi">0 items</small><b id="bt">₹0</b></div>
+  <button class="btn go">View cart →</button>
+</div>
+
+
+<div class="splash" id="sp"><div><div class="scene"><div class="cube"><i>⚡</i><i>🛒</i><i>🥛</i><i>🍞</i></div></div><b>dash</b><div class="prog"></div></div></div>
+<nav class="tabs" aria-label="Primary"><button onclick="scrollTo({top:0,behavior:'smooth'})"><span>🏠</span>Home</button><button onclick="document.getElementById('cats').scrollIntoView({behavior:'smooth',block:'center'})"><span>🗂️</span>Browse</button><button onclick="scrollTo({top:0,behavior:'smooth'});setTimeout(()=>document.getElementById('q').focus(),350)"><span>🔍</span>Search</button><button onclick="oc()"><span>🛒</span>Cart</button><button onclick="document.getElementById('lb').click()"><span>👤</span>Account</button></nav>
+<div class="toast" id="tt"></div>
+<div class="ov" id="ov" onclick="cc()"></div>
+<aside class="drawer" id="dr"><div class="dh"><b id="dt">My Cart</b><button class="btn x2" onclick="cc()">✕</button></div><div class="db" id="db"></div><div class="df" id="df"></div></aside>
+<div class="modal" id="pm"><div class="sheet"><button class="btn x" onclick="$('pm').classList.remove('on')">✕</button><div id="pb"></div></div></div>
+<div class="trk" id="tk"><div class="tw">
+ <div style="display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:18px">Order #<span id="oid"></span></b><div style="color:var(--mute);font-size:13px;margin-top:2px">Arriving in <b id="eta" style="color:var(--brand)">10 mins</b></div></div><button class="btn x2" onclick="ct()">✕</button></div>
+ <svg class="map" viewBox="0 0 400 220"><path id="rt" d="M50 185 C130 185 110 70 200 80 S310 160 350 45" fill="none" stroke="var(--brand)" stroke-width="4" stroke-dasharray="2 9" stroke-linecap="round"/>
+ <text x="36" y="195" font-size="26">🏬</text><text x="338" y="40" font-size="26">🏠</text><g id="rd" transform="translate(50 185)"><circle r="17" fill="var(--brand)"/><text y="6" font-size="18" text-anchor="middle">🛵</text></g></svg>
+ <div class="bx"><b id="tst" style="font-size:16px">Order confirmed</b>
+  <div style="margin-top:8px"><div class="stp on">Order confirmed</div><div class="stp">Packing your items</div><div class="stp">Rider is on the way</div><div class="stp">Delivered</div></div></div>
+ <div class="bx" style="display:flex;align-items:center;gap:12px;margin-top:12px"><div class="e" style="font-size:30px">🧑</div><div style="flex:1"><b>Ravi Kumar</b><div style="color:var(--mute);font-size:12.5px">Delivery partner · 4.9 ★</div></div><button class="btn add" onclick="toast('Calling Ravi…')">📞 Call</button></div>
+ <button class="btn main" id="bk" style="display:none" onclick="ct()">Back to shop</button>
+</div></div>
+<div class="modal" id="m"><div class="sheet">
+ <button class="btn x" onclick="cl()">✕</button><div class="em">⚡</div>
+ <div id="s1"><h3>Log in or sign up</h3><p>Enter your mobile number to get 10-minute delivery.</p>
+  <div class="ph"><span>+91</span><input id="ph" inputmode="numeric" maxlength="10" placeholder="Mobile number"></div><div class="err" id="e1"></div>
+  <button class="btn main" onclick="snd()">Continue</button></div>
+ <div class="step2" id="s2"><h3>Verify OTP</h3><p id="sub">Sent to your number</p>
+  <div class="otp"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"><input maxlength="1" inputmode="numeric"></div><div class="err" id="e2"></div>
+  <button class="btn main" onclick="ver()">Verify &amp; continue</button><div class="hint">Demo mode: enter any 4 digits</div></div>
+</div></div>
+<script>
+const cats=[["🥛","Dairy"],["🍞","Bakery"],["🍿","Snacks"],["🥤","Drinks"],["🍚","Staples"],["🧴","Care"]];
+const P=[
+["🥛","Fresh Toned Milk","500 ml",27,30,"Dairy"],
+["🍞","Brown Bread","400 g",45,50,"Bakery"],
+["🥚","Farm Eggs","6 pcs",54,60,"Dairy"],["🧀","Cheese Slices","200 g",125,140,"Dairy"],["🍪","Butter Cookies","150 g",35,40,"Snacks"],["🥐","Butter Croissant","2 pcs",89,110,"Bakery"],
+["🧃","Orange Juice","1 L",99,120,"Drinks"],["🍚","Basmati Rice","1 kg",119,145,"Staples"]];
+/* PRODUCT PHOTOS: paste your image URLs (or data: URIs) here, keyed by product name.
+   Emoji shows automatically for any product without a photo or if a photo fails to load. */
+const IMG={
+ // "Fresh Toned Milk":"https://yourcdn.com/images/milk.png",
+ // "Brown Bread":"https://yourcdn.com/images/bread.png",
+};
+P.forEach(p=>p[6]=IMG[p[1]]||"");
+const cart={};let tab="All",term="";
+const $=id=>document.getElementById(id);
+$("cats").innerHTML=cats.map(c=>`<div class="cat"><div class="tile">${c[0]}</div><span>${c[1]}</span></div>`).join("");
+const tabs=["All","Dairy","Bakery","Snacks","Drinks","Staples"];
+function chips(){$("chips").innerHTML=tabs.map(t=>`<div class="chip ${t==tab?"on":""}" onclick="tab='${t}';chips();draw()">${t}</div>`).join("")}
+function draw(){
+ $("grid").innerHTML=P.map((p,i)=>({p,i})).filter(({p})=>(tab=="All"||p[5]==tab)&&p[1].toLowerCase().includes(term)).map(({p,i})=>{
+  const n=cart[i]||0,off=Math.round((1-p[3]/p[4])*100);
+  return `<div class="card" data-i="${i}"><span class="off">${off}% OFF</span><div class="img">${p[6]?`<img src="${p[6]}" alt="${p[1]}" loading="lazy" onerror="this.replaceWith(document.createTextNode('${p[0]}'))">`:p[0]}</div>
+  <span class="eta">⚡ 10 MINS</span><div class="name">${p[1]}</div><div class="qty">${p[2]}</div>
+  <div class="foot"><div class="price"><b>₹${p[3]}</b><s>₹${p[4]}</s></div>
+  ${n?`<div class="step"><button onclick="ch(${i},-1)">−</button><span>${n}</span><button onclick="ch(${i},1,event)">+</button></div>`:`<button class="btn add" onclick="ch(${i},1,event)">ADD</button>`}
+  </div></div>`}).join("")||'<p style="color:var(--mute);padding:20px 0">No items found.</p>';
+}
+function ch(i,d,e){const r=e&&e.currentTarget.getBoundingClientRect();cart[i]=Math.max(0,(cart[i]||0)+d);if(!cart[i])delete cart[i];draw();sum();if(d>0&&r)fly(r,i)}
+function sum(){let n=0,t=0;for(const k in cart){n+=cart[k];t+=cart[k]*P[k][3]}
+ $("bi").textContent=n+(n==1?" item":" items")+(t>=199?" · Free delivery":"");$("bt").textContent="₹"+t;
+ $("bar").classList.toggle("show",n>0);$("hc").textContent=n?n+" items · ₹"+t:"My Cart"}
+$("q").oninput=e=>{term=e.target.value.toLowerCase();draw()};
+
+function toast(t){const e=$("tt");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2200)}
+let user=null;
+function op(){$("m").classList.add("on");$("s1").style.display="";$("s2").style.display="none";$("ph").value="";$("e1").textContent="";setTimeout(()=>$("ph").focus(),300)}
+function cl(){$("m").classList.remove("on")}
+$("m").onclick=e=>{if(e.target==$("m"))cl()};
+$("lb").onclick=()=>{if(user){user=null;$("lb").textContent="Login";toast("Logged out")}else op()};
+function snd(){const v=$("ph").value;if(!/^[6-9]\d{9}$/.test(v)){$("e1").textContent="Enter a valid 10-digit mobile number";return}
+ $("s1").style.display="none";$("s2").style.display="block";$("sub").textContent="Sent to +91 "+v;$("e2").textContent="";const o=document.querySelectorAll(".otp input");o.forEach(i=>i.value="");o[0].focus()}
+document.querySelectorAll(".otp input").forEach((i,k,a)=>{i.oninput=()=>{i.value=i.value.replace(/\D/g,"");if(i.value&&a[k+1])a[k+1].focus()};i.onkeydown=e=>{if(e.key=="Backspace"&&!i.value&&a[k-1])a[k-1].focus()}});
+function ver(){const c=[...document.querySelectorAll(".otp input")].map(i=>i.value).join("");if(c.length<4){$("e2").textContent="Enter the 4-digit OTP";return}
+ user=$("ph").value;$("lb").textContent="👤 +91 "+user.slice(0,2)+"••••"+user.slice(-3);cl();toast("Welcome to Dash! 🎉")}
+document.querySelector(".go").onclick=()=>user?toast("Proceeding to checkout…"):op();
+$("ph").onkeydown=e=>{if(e.key=="Enter")snd()};
+function fly(r,i){const t=$("cartBtn").getBoundingClientRect(),f=document.createElement("div");f.className="fly";f.textContent=P[i][0];
+ f.style.left=r.left+r.width/2-17+"px";f.style.top=r.top+"px";document.body.appendChild(f);
+ const dx=t.left+t.width/2-r.left-r.width/2,dy=t.top+t.height/2-r.top;
+ f.animate([{transform:"translate(0,0) scale(1) rotate(0)"},{transform:`translate(${dx*.45}px,${dy-90}px) scale(1.15) rotate(120deg)`,offset:.45},{transform:`translate(${dx}px,${dy}px) scale(.25) rotate(300deg)`,opacity:.5}],{duration:750,easing:"cubic-bezier(.5,0,.6,1)"}).onfinish=()=>{f.remove();const b=$("cartBtn");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump")}}
+const g=$("grid");
+g.addEventListener("pointermove",e=>{const c=e.target.closest(".card");if(!c||e.pointerType!="mouse")return;const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;c.style.transform=`perspective(700px) rotateX(${-y*10}deg) rotateY(${x*12}deg) translateZ(6px)`});
+g.addEventListener("pointerout",e=>{const c=e.target.closest(".card");if(c)c.style.transform=""});
+g.innerHTML=Array(8).fill('<div class="sk"></div>').join("");chips();
+setTimeout(()=>{$("sp").classList.add("hide")},1700);setTimeout(draw,2000);
+
+let pay="UPI",step="cart",tm;
+const D={Dairy:"Sourced fresh from local dairies and delivered chilled.",Bakery:"Baked this morning and packed hygienically.",Snacks:"Crunchy, tasty and perfect for any time.",Drinks:"Best served chilled. No added preservatives.",Staples:"Premium pantry staple, cleaned and sorted."};
+const bill=()=>{let t=0;for(const k in cart)t+=cart[k]*P[k][3];const f=t>=199?0:25;return{t,f,g:t+f+2}};
+function oc(){$("ov").classList.add("on");$("dr").classList.add("on");step="cart";rd()}
+function cc(){$("ov").classList.remove("on");$("dr").classList.remove("on")}
+function rd(){const ks=Object.keys(cart),b=bill();$("dt").textContent=step=="cart"?"My Cart":"Checkout";
+ if(!ks.length){$("db").innerHTML='<div class="bx" style="text-align:center;padding:50px 20px"><div style="font-size:56px">🛒</div><b>Your cart is empty</b><p style="color:var(--mute);margin-top:6px">Add items to get 10-minute delivery.</p></div>';$("df").innerHTML="";return}
+ const bl=`<div class="bx"><b>Bill details</b><div class="row"><span>Item total</span><span>₹${b.t}</span></div><div class="row"><span>Delivery fee</span><span>${b.f?"₹"+b.f:"FREE"}</span></div><div class="row"><span>Handling</span><span>₹2</span></div><div class="row t"><span>To pay</span><span>₹${b.g}</span></div></div>`;
+ if(step=="cart"){$("db").innerHTML=`<div class="bx">⚡ <b>Delivery in 10 minutes</b></div><div class="bx">${ks.map(i=>`<div class="it"><div class="e">${P[i][0]}</div><div class="n">${P[i][1]}<small>${P[i][2]} · ₹${P[i][3]}</small><button class="rm" onclick="del(${i})">Remove</button></div><div class="step"><button onclick="ch(${i},-1)">−</button><span>${cart[i]}</span><button onclick="ch(${i},1)">+</button></div></div>`).join("")}</div>
+  <div class="bx" style="font-size:13px;font-weight:600">${b.t>=199?"🎉 You unlocked free delivery":"Add ₹"+(199-b.t)+" more for free delivery"}<div class="fp"><i style="width:${Math.min(100,b.t/1.99)}%"></i></div></div>${bl}`;
+  $("df").innerHTML=`<button class="btn main" onclick="pr()">Proceed to pay · ₹${b.g}</button>`}
+ else{$("db").innerHTML=`<div class="bx">📍 <b>Delivering to Home</b><div style="color:var(--mute);margin-top:4px">Kurnool, Andhra Pradesh</div></div><div class="bx"><b>Payment method</b>${["UPI","Card","Cash on delivery"].map(m=>`<div class="pay ${pay==m?"on":""}" onclick="pay='${m}';rd()">${{UPI:"📱",Card:"💳","Cash on delivery":"💵"}[m]} ${m}</div>`).join("")}</div>${bl}`;
+  $("df").innerHTML=`<button class="btn main" onclick="place()">Place order · ₹${b.g}</button>`}}
+function pr(){if(!user){cc();op();return}step="co";rd()}
+const _s=sum;sum=function(){_s();if($("dr").classList.contains("on"))rd()};
+function place(){const id=Math.floor(1e5+Math.random()*9e5);for(const k in cart)delete cart[k];draw();sum();cc();
+ $("oid").textContent=id;$("bk").style.display="none";$("tk").classList.add("on");
+ const p=$("rt"),L=p.getTotalLength(),t0=Date.now();clearInterval(tm);
+ tm=setInterval(()=>{const q=Math.min(1,(Date.now()-t0)/24000),pt=p.getPointAtLength(q*L),s=q>=1?3:q>.4?2:q>.15?1:0;
+  $("rd").setAttribute("transform",`translate(${pt.x} ${pt.y})`);document.querySelectorAll(".stp").forEach((e,i)=>e.classList.toggle("on",i<=s));
+  $("eta").textContent=q>=1?"Delivered":Math.max(1,Math.ceil(10*(1-q)))+" mins";$("tst").textContent=["Order confirmed","Packing your items","Rider is on the way","Delivered 🎉"][s];
+  if(q>=1){clearInterval(tm);$("bk").style.display="block"}},100)}
+function ct(){$("tk").classList.remove("on");clearInterval(tm)}
+function pd(i){const p=P[i];$("pb").innerHTML=`<div class="pd"><div class="big">${p[0]}</div><div class="pi"><h3>${p[1]}</h3><p style="margin:6px 0 14px">${p[2]} · ${D[p[5]]}</p><div class="row" style="padding:0 0 4px"><b style="color:var(--ink);font-size:20px">₹${p[3]} <s style="font-size:13px;color:var(--mute);font-weight:400">₹${p[4]}</s></b><span style="color:var(--brand);font-weight:700">⚡ 10 mins</span></div><button class="btn main" onclick="ch(${i},1,event);$('pm').classList.remove('on')">Add to cart</button></div></div>`;$("pm").classList.add("on")}
+$("pm").onclick=e=>{if(e.target==$("pm"))$("pm").classList.remove("on")};
+g.addEventListener("click",e=>{const el=e.target.closest(".img,.name");if(el)pd(+el.closest(".card").dataset.i)});
+$("cartBtn").onclick=oc;document.querySelector(".go").onclick=oc;
+
+/* design-layer helpers */
+const sl=document.querySelector("label.search"),mq=matchMedia("(max-width:699px)");
+function plc(){mq.matches?$("sr").appendChild(sl):$("lb").parentNode.insertBefore(sl,$("lb"))}plc();mq.addEventListener("change",plc);
+$("q").setAttribute("type","search");$("q").setAttribute("aria-label","Search products");$("cartBtn").setAttribute("aria-label","Open cart");
+document.querySelectorAll(".x,.x2").forEach(b=>b.setAttribute("aria-label","Close"));
+$("cats").addEventListener("click",e=>{const t=e.target.closest(".cat");if(!t)return;const n=t.querySelector("span").textContent;if(tabs.includes(n)){tab=n;chips();draw();$("chips").scrollIntoView({behavior:"smooth",block:"center"})}else toast(n+" is coming soon")});
+function del(i){delete cart[i];draw();sum()}
+addEventListener("keydown",e=>{if(e.key=="Escape"){cl();cc();$("pm").classList.remove("on")}});
+</script>
+</body>
+</html>
