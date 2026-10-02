@@ -115,3 +115,4 @@ Admin:
 - `/admin/inventory`
 - `/admin/orders`
 - `/admin/customers`
+DashKirana deployment
